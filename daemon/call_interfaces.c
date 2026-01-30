@@ -1256,9 +1256,7 @@ void call_ng_flags_flags(str *s, unsigned int idx, helper_arg arg) {
 			out->no_rtcp_attr = true;
 			break;
 		case CSH_LOOKUP("no-tls-id"):
-		case CSH_LOOKUP("no tls-id"):
-		case CSH_LOOKUP("no-TLS-ID"):
-		case CSH_LOOKUP("no TLS-ID"):
+		case CSH_LOOKUP("no tls id"):
 			out->no_tls_id = true;
 			break;
 		case CSH_LOOKUP("no-jitter-buffer"):
