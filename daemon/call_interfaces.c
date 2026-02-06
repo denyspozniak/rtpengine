@@ -1255,6 +1255,10 @@ void call_ng_flags_flags(str *s, unsigned int idx, helper_arg arg) {
 		case CSH_LOOKUP("no RTCP attribute"):
 			out->no_rtcp_attr = true;
 			break;
+		case CSH_LOOKUP("no-tls-id"):
+		case CSH_LOOKUP("no tls id"):
+			out->no_tls_id = true;
+			break;
 		case CSH_LOOKUP("no-jitter-buffer"):
 		case CSH_LOOKUP("no jitter buffer"):
 			out->disable_jb = true;
@@ -2228,6 +2232,7 @@ void call_ng_main_flags(const ng_parser_t *parser, str *key, parser_arg value, h
 		case CSH_LOOKUP("rtpp-flags"):
 		case CSH_LOOKUP("rtpp_flags"):;
 			/* s - list of rtpp flags */
+			out->rtpp_flags = true;
 			parse_rtpp_flags(&s, out);
 			break;
 		case CSH_LOOKUP("SDES"):
@@ -2339,6 +2344,8 @@ void call_ng_main_flags(const ng_parser_t *parser, str *key, parser_arg value, h
 			out->to_call_id = s;
 			break;
 		case CSH_LOOKUP("to-tag"):
+		case CSH_LOOKUP("to_tag"):
+		case CSH_LOOKUP("to tag"):
 			out->to_tag = s;
 			break;
 		case CSH_LOOKUP("TOS"):
@@ -4198,7 +4205,8 @@ const char *call_subscribe_request_ng(ng_command_ctx_t *ctx) {
 		flags.label = flags.set_label;
 
 	/* get destination monologue */
-	if (!flags.to_tag.len) {
+	// ignore the to-tag if rtpp_flags parsing is active and to-tag wasn't given explicitly
+	if (!flags.to_tag.len || (flags.rtpp_flags && !flags.to_tag_flag)) {
 		/* generate one */
 		flags.to_tag = STR_CONST(rand_buf);
 		rand_hex_str(flags.to_tag.s, flags.to_tag.len / 2);
